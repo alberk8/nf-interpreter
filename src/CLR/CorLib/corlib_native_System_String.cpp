@@ -586,13 +586,15 @@ HRESULT Library_corlib_native_System_String::ToCharArray(CLR_RT_StackFrame &stac
 }
 
 // Helper function for comparing UTF-8 substrings
-static inline bool MatchString(CLR_RT_UnicodeHelper& inputIter, const char* searchStr, int searchCharLen) {
+static inline bool MatchString(CLR_RT_UnicodeHelper &inputIter, const char *searchStr, int searchCharLen)
+{
     // Create copies to preserve original iterator state
     CLR_RT_UnicodeHelper inputCopy = inputIter;
     CLR_RT_UnicodeHelper searchIter;
     searchIter.SetInputUTF8(searchStr);
 
-    for (int i = 0; i < searchCharLen; i++) {
+    for (int i = 0; i < searchCharLen; i++)
+    {
         CLR_UINT16 bufInput[3] = {0};
         CLR_UINT16 bufSearch[3] = {0};
 
@@ -603,23 +605,28 @@ static inline bool MatchString(CLR_RT_UnicodeHelper& inputIter, const char* sear
         searchIter.m_outputUTF16_size = MAXSTRLEN(bufSearch);
 
         // Convert next character from input
-        if (!inputCopy.ConvertFromUTF8(1, false)) {
+        if (!inputCopy.ConvertFromUTF8(1, false))
+        {
             return false; // Input ended prematurely
         }
 
         // Convert next character from search string
-        if (!searchIter.ConvertFromUTF8(1, false)) {
+        if (!searchIter.ConvertFromUTF8(1, false))
+        {
             return false; // Shouldn't happen for valid search string
         }
 
         // Compare first UTF-16 code unit
-        if (bufInput[0] != bufSearch[0]) {
+        if (bufInput[0] != bufSearch[0])
+        {
             return false;
         }
 
         // Handle surrogate pairs (4-byte UTF-8 sequences)
-        if (bufInput[0] >= 0xD800 && bufInput[0] <= 0xDBFF) { // High surrogate
-            if (bufInput[1] != bufSearch[1]) {
+        if (bufInput[0] >= 0xD800 && bufInput[0] <= 0xDBFF)
+        { // High surrogate
+            if (bufInput[1] != bufSearch[1])
+            {
                 return false; // Low surrogate mismatch
             }
         }
